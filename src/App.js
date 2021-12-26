@@ -1,24 +1,108 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+// import logo from './logo.svg';
+// import './App.css';
+
+function Square(props) {
+  return (
+    <button
+      className='square'
+      onClick={props.onClick}
+    >
+      {props.value}
+    </button>
+  )
+}
+
+class Board extends React.Component {
+  constructor(props) {
+    super(props);    
+    this.state = {
+      value: null,
+      squares: Array(9).fill(null),
+    };
+  }
+  
+  renderSquare(i) {
+    return (
+      <Square value = {this.state.squares[i]}/>
+    )
+  };
+
+  
+
+  render () {
+    const GRID_ROW_LENGTH = 10;
+    const GRID_COL_LENGTH = 20; 
+    const grid = [];
+
+    for (let row = 0; row < GRID_ROW_LENGTH; row++){
+      const currentRow = [];
+      for (let col = 0; col < GRID_COL_LENGTH; col++){
+        currentRow.push(this.renderSquare(row+col))
+      }
+      grid.push(currentRow)
+    }
+    console.log(grid);
+
+    return (
+      <div>
+        {grid.map((row, rowId) => {
+          return (
+            <div key={rowId} className='board-row'>
+              {row.map((cell, cellId) => {
+                return (cell);
+              })}
+            </div>
+          )
+        })}
+      </div>
+    )};
+
+    /*
+    const items = [];
+    for (const [index, value] of this.state.squares.entries()) {
+      items.push({renderSquare(index)})
+    }
+
+    return (
+      <div>
+        {items}
+      </div>
+    )
+    
+    for (let i = 0; i < 3; i++){
+      <div className='board-row'>
+        for (let j = 0; j < 3; j++){}
+      </div>
+    }
+    
+
+
+    return (
+      <div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
+      </div>
+    )};*/
+}
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Board/>
   );
 }
 
