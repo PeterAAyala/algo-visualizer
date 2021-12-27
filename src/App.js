@@ -1,4 +1,6 @@
 import React from 'react';
+import { Fragment } from 'react/cjs/react.production.min';
+import './buttons.css';
 // import logo from './logo.svg';
 // import './App.css';
 
@@ -16,6 +18,20 @@ function Square(props) {
   )
 }
 
+class Buttons extends React.Component{
+  render () {
+    return (
+    <div className ='radio-toolbar'>
+      <input type='radio' id='addWall' name='radAnswer' value='addWall' />
+      <label htmlFor='addWall'>Add Wall</label>
+    
+      <input type='radio' id='removeWall' name='radAnswer' value='removeWall' />
+      <label htmlFor='removeWall'>Remove Wall</label> 
+    </div>
+    
+    )};
+}
+
 class Board extends React.Component {
   constructor(props) {
     super(props);    
@@ -27,10 +43,10 @@ class Board extends React.Component {
     };
   }
   
+  // Event handler for mouse hold down 
   handleEvent = (event) => {
     if (event.type === 'mousedown'){
       this.setState({ mouseDown: true });
-      //console.log("test");
     } else {
       this.setState({ mouseDown: false });
     }
@@ -108,7 +124,10 @@ class Board extends React.Component {
 
 function App() {
   return (
-    <Board/>
+    <Fragment> 
+      <Buttons/>
+      <Board/>
+    </Fragment>
   );
 }
 
