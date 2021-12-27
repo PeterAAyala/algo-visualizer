@@ -5,7 +5,7 @@ import React from 'react';
 function Square(props) {
   return (
     <button
-      className='square'
+      className={props.class}
       onClick={props.onClick}
     >
       {props.value}
@@ -19,12 +19,15 @@ class Board extends React.Component {
     this.state = {
       value: null,
       grid: Array(10).fill(null).map(x => Array(20).fill(null)),
+      classGrid: Array(10).fill('square').map(x => Array(20).fill('square')),
     };
   }
   
   renderSquare(i, j) {
     return (
       <Square 
+        key = {i+j}
+        class = {this.state.classGrid[i][j]}//'square'
         value = {this.state.grid[i][j]}
         onClick = {() => this.handleClick(i,j)}/>
     )
@@ -33,8 +36,11 @@ class Board extends React.Component {
   handleClick (i, j) {
     const current = this.state.grid.slice();
     current[i][j] = 'X';
+    const classUpdate = this.state.classGrid.slice();
+    classUpdate[i][j] = 'square wall'
     this.setState({
       grid: current,
+      classGrid: classUpdate,
     });
   }
 
