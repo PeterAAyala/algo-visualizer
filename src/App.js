@@ -18,17 +18,25 @@ class Board extends React.Component {
     super(props);    
     this.state = {
       value: null,
-      squares: Array(9).fill(null),
+      grid: Array(10).fill(null).map(x => Array(20).fill(null)),
     };
   }
   
-  renderSquare(i) {
+  renderSquare(i, j) {
     return (
-      <Square value = {this.state.squares[i]}/>
+      <Square 
+        value = {this.state.grid[i][j]}
+        onClick = {() => this.handleClick(i,j)}/>
     )
   };
 
-  
+  handleClick (i, j) {
+    const current = this.state.grid.slice();
+    current[i][j] = 'X';
+    this.setState({
+      grid: current,
+    });
+  }
 
   render () {
     const GRID_ROW_LENGTH = 10;
@@ -38,12 +46,12 @@ class Board extends React.Component {
     for (let row = 0; row < GRID_ROW_LENGTH; row++){
       const currentRow = [];
       for (let col = 0; col < GRID_COL_LENGTH; col++){
-        currentRow.push(this.renderSquare(row+col))
+        currentRow.push(this.renderSquare(row, col))
       }
       grid.push(currentRow)
     }
-    console.log(grid);
-
+    //console.log(grid);
+    //console.log(this.state.grid);
     return (
       <div>
         {grid.map((row, rowId) => {
