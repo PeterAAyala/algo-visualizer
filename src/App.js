@@ -54,9 +54,9 @@ class Board extends React.Component {
   handleHover (i, j){
     if (this.state.mouseDown){
       const current = this.state.grid.slice();
-      current[i][j] = 'X';
+      current[i][j] = (current[i][j] === 'X') ? null : 'X';
       const classUpdate = this.state.classGrid.slice();
-      classUpdate[i][j] = 'square wall';
+      classUpdate[i][j] = (classUpdate[i][j] === 'square wall') ? 'square' : 'square wall';
       this.setState({
         grid: current,
         classGrid: classUpdate,
