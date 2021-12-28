@@ -19,9 +19,22 @@ function Square(props) {
 }
 
 class Buttons extends React.Component{
+  
+  constructor(props){
+    super(props);
+    this.state = {
+      setting: null,
+    };
+  }
+
+  handleRadioSelect = (event) => {
+    this.state.setting = event.target.value;
+    console.log(this.state.setting);
+  }
+
   render () {
     return (
-    <div className ='radio-toolbar'>
+    <div className ='radio-toolbar' onChange={this.handleRadioSelect}>
       <input type='radio' id='addWall' name='radAnswer' value='addWall' />
       <label htmlFor='addWall'>Add Wall</label>
     
