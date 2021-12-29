@@ -34,7 +34,7 @@ class Buttons extends React.Component{
 
   render () {
     return (
-    <div className ='radio-toolbar' onChange={this.handleRadioSelect}>
+    <div className ='radio-toolbar' onChange={this.handleRadioSelect} id = 'wall-select'>
       <input type='radio' id='addWall' name='radAnswer' value='addWall' />
       <label htmlFor='addWall'>Add Wall</label>
     
@@ -53,13 +53,21 @@ class Board extends React.Component {
       grid: Array(10).fill(null).map(x => Array(20).fill(null)),
       classGrid: Array(10).fill('square').map(x => Array(20).fill('square')),
       mouseDown: false,
+      wallEdit: null,
     };
   }
   
   // Event handler for mouse hold down 
   handleEvent = (event) => {
     if (event.type === 'mousedown'){
-      this.setState({ mouseDown: true });
+      const buttonSelection = document.querySelector('input[name="radAnswer"]:checked').value;
+      this.setState({ 
+        mouseDown: true, 
+        wallEdit: buttonSelection,
+      });
+      //const test = document.getElementById('wall-select');
+      //const test = document.querySelector('input[name="radAnswer"]:checked').value;
+      console.log(buttonSelection);
     } else {
       this.setState({ mouseDown: false });
     }
@@ -83,9 +91,11 @@ class Board extends React.Component {
   handleHover (i, j){
     if (this.state.mouseDown){
       const current = this.state.grid.slice();
-      current[i][j] = (current[i][j] === 'X') ? null : 'X';
+      // current[i][j] = (current[i][j] === 'X') ? null : 'X';
+      current[i][j] = (this.state.wallEdit === 'addWall') ? 'X' : null;
       const classUpdate = this.state.classGrid.slice();
-      classUpdate[i][j] = (classUpdate[i][j] === 'square wall') ? 'square' : 'square wall';
+      //classUpdate[i][j] = (classUpdate[i][j] === 'square wall') ? 'square' : 'square wall';
+      classUpdate[i][j] = (this.state.wallEdit === 'addWall') ? 'square wall' : 'square';
       this.setState({
         grid: current,
         classGrid: classUpdate,
@@ -117,6 +127,8 @@ class Board extends React.Component {
       }
       grid.push(currentRow)
     }
+
+    
     //console.log(grid);
     //console.log(this.state.grid);
     return (
