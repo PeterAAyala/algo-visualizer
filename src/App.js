@@ -18,6 +18,13 @@ function Square(props) {
   )
 }
 
+function arrayEquals(a, b) {
+  return Array.isArray(a) &&
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((val, index) => val === b[index]);
+}
+
 class Buttons extends React.Component{
   
   constructor(props){
@@ -66,13 +73,18 @@ class Board extends React.Component {
   
   // Event handler for mouse hold down 
   handleEvent = (i,j) => (event) => {
-    /*if (this.state.startBlock === [i,j] && event.type === 'mousedown'){
+    /*console.log([i,j]);
+    console.log(this.state.startBlock);
+    if (arrayEquals([i,j], this.state.startBlock)){
+      console.log('test4');
+    }*/
+    if (arrayEquals([i,j], this.state.startBlock) && event.type === 'mousedown'){
       console.log("test");
       this.setState({
         mouseDown: true,
         startFlag: true,
       });
-    } else */if (event.type === 'mousedown'){
+    } else if (event.type === 'mousedown'){
       console.log("test2");
       const buttonSelection = document.querySelector('input[name="radAnswer"]:checked').value;
       this.setState({ 
@@ -105,7 +117,7 @@ class Board extends React.Component {
   };
 
   handleHover (i, j){
-    /*if (this.state.mouseDown && this.state.startFlag) {
+    if (this.state.mouseDown && this.state.startFlag) {
       const prevStart = this.state.startBlock;
       const classUpdate = this.state.classGrid.slice();
 
@@ -113,9 +125,10 @@ class Board extends React.Component {
       classUpdate[prevStart[0]][prevStart[1]] = 'square';
       this.setState({
         classGrid: classUpdate,
+        startBlock: [i,j],
       });
       
-    } else */if (this.state.mouseDown){
+    } else if (this.state.mouseDown){
 
       const current = this.state.grid.slice();
       current[i][j] = (this.state.wallEdit === 'addWall') ? 'X' : null;
