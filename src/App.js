@@ -47,11 +47,16 @@ class Buttons extends React.Component{
 
 class Board extends React.Component {
   constructor(props) {
-    super(props);    
+    super(props);
+    
+    const initClassUpdate = Array(10).fill('square').map(x => Array(20).fill('square'));
+    initClassUpdate[0][0] = 'square start';
+    initClassUpdate[9][19] = 'square end';
+
     this.state = {
       value: null,
       grid: Array(10).fill(null).map(x => Array(20).fill(null)),
-      classGrid: Array(10).fill('square').map(x => Array(20).fill('square')),
+      classGrid: initClassUpdate,//Array(10).fill('square').map(x => Array(20).fill('square')),
       mouseDown: false,
       wallEdit: null,
     };
@@ -103,6 +108,15 @@ class Board extends React.Component {
     }
   }
 
+  initBoard() {
+    const initClassUpdate = this.state.classGrid.slice();
+    initClassUpdate[0][0] = 'square wall';
+    initClassUpdate[9][19] = 'square wall';
+    this.setState({
+      classGrid: initClassUpdate,
+    })
+  }
+
   handleClick (i, j) {
     const current = this.state.grid.slice();
     current[i][j] = 'X';
@@ -116,6 +130,7 @@ class Board extends React.Component {
 
   render () {
     //console.log(this.handleEvent);
+    //this.initBoard();
     const GRID_ROW_LENGTH = 10;
     const GRID_COL_LENGTH = 20; 
     const grid = [];
@@ -128,7 +143,11 @@ class Board extends React.Component {
       grid.push(currentRow)
     }
 
-    
+    //this.setState({ })
+    //this.state.classGrid[0][0] = 'square wall';
+
+
+
     //console.log(grid);
     //console.log(this.state.grid);
     return (

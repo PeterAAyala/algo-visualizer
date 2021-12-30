@@ -35,6 +35,15 @@ ol, ul {
 .wall  {
   background: #aaaaaa;
 }
+
+.start {
+  background: #AFE1AF;
+}
+
+.end{
+  background: #FF5733;
+}
+
 .square:focus {
   outline: none;
 }
