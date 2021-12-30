@@ -1,8 +1,6 @@
 import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
 import './buttons.css';
-// import logo from './logo.svg';
-// import './App.css';
 
 function Square(props) {
   return (
@@ -63,29 +61,29 @@ class Board extends React.Component {
     this.state = {
       value: null,
       grid: Array(10).fill(null).map(x => Array(20).fill(null)),
-      classGrid: initClassUpdate,//Array(10).fill('square').map(x => Array(20).fill('square')),
+      classGrid: initClassUpdate,
       mouseDown: false,
       wallEdit: null,
       startBlock: [0,0],
       startFlag: false,
+      endBlock: [9, 19],
+      endFlag: false,
     };
   }
   
   // Event handler for mouse hold down 
   handleEvent = (i,j) => (event) => {
-    /*console.log([i,j]);
-    console.log(this.state.startBlock);
-    if (arrayEquals([i,j], this.state.startBlock)){
-      console.log('test4');
-    }*/
     if (arrayEquals([i,j], this.state.startBlock) && event.type === 'mousedown'){
-      console.log("test");
       this.setState({
         mouseDown: true,
         startFlag: true,
       });
+    } else if (arrayEquals([i,j], this.state.endBlock) && event.type === 'mousedown'){
+      this.setState({
+        mouseDown: true,
+        endFlag: true,
+      });
     } else if (event.type === 'mousedown'){
-      console.log("test2");
       const buttonSelection = document.querySelector('input[name="radAnswer"]:checked').value;
       this.setState({ 
         mouseDown: true, 
@@ -93,10 +91,10 @@ class Board extends React.Component {
       });
       console.log(buttonSelection);
     } else {
-      console.log("test3");
       this.setState({ 
         mouseDown: false,
         startFlag: false,
+        endFlag: false,
       });
     }
   }
@@ -128,6 +126,16 @@ class Board extends React.Component {
         startBlock: [i,j],
       });
       
+    } else if (this.state.mouseDown && this.state.endFlag){
+      const prevEnd = this.state.endBlock;
+      const classUpdate = this.state.classGrid.slice();
+
+      classUpdate[i][j] = 'square end';
+      classUpdate[prevEnd[0]][prevEnd[1]] = 'square';
+      this.setState({
+        classGrid: classUpdate,
+        endBlock: [i,j],
+      });
     } else if (this.state.mouseDown){
 
       const current = this.state.grid.slice();
