@@ -35,7 +35,7 @@ class Buttons extends React.Component{
   render () {
     return (
     <div className ='radio-toolbar' onChange={this.handleRadioSelect} id = 'wall-select'>
-      <input type='radio' id='addWall' name='radAnswer' value='addWall' />
+      <input type='radio' id='addWall' name='radAnswer' value='addWall'/>
       <label htmlFor='addWall'>Add Wall</label>
     
       <input type='radio' id='removeWall' name='radAnswer' value='removeWall' />
@@ -59,22 +59,33 @@ class Board extends React.Component {
       classGrid: initClassUpdate,//Array(10).fill('square').map(x => Array(20).fill('square')),
       mouseDown: false,
       wallEdit: null,
+      startBlock: [0,0],
+      startFlag: false,
     };
   }
   
   // Event handler for mouse hold down 
-  handleEvent = (event) => {
-    if (event.type === 'mousedown'){
+  handleEvent = (i,j) => (event) => {
+    /*if (this.state.startBlock === [i,j] && event.type === 'mousedown'){
+      console.log("test");
+      this.setState({
+        mouseDown: true,
+        startFlag: true,
+      });
+    } else */if (event.type === 'mousedown'){
+      console.log("test2");
       const buttonSelection = document.querySelector('input[name="radAnswer"]:checked').value;
       this.setState({ 
         mouseDown: true, 
         wallEdit: buttonSelection,
       });
-      //const test = document.getElementById('wall-select');
-      //const test = document.querySelector('input[name="radAnswer"]:checked').value;
       console.log(buttonSelection);
     } else {
-      this.setState({ mouseDown: false });
+      console.log("test3");
+      this.setState({ 
+        mouseDown: false,
+        startFlag: false,
+      });
     }
   }
   
@@ -87,20 +98,34 @@ class Board extends React.Component {
         value = {this.state.grid[i][j]}
         onClick = {() => this.handleClick(i,j)}
         onMouseOver = {() => this.handleHover(i,j)}
-        onMouseDown = {this.handleEvent}
-        onMouseUp = {this.handleEvent}
+        onMouseDown = {this.handleEvent(i,j)}
+        onMouseUp = {this.handleEvent(i,j)}
       />
     )
   };
 
   handleHover (i, j){
-    if (this.state.mouseDown){
+    /*if (this.state.mouseDown && this.state.startFlag) {
+      const prevStart = this.state.startBlock;
+      const classUpdate = this.state.classGrid.slice();
+
+      classUpdate[i][j] = 'square start';
+      classUpdate[prevStart[0]][prevStart[1]] = 'square';
+      this.setState({
+        classGrid: classUpdate,
+      });
+      
+    } else */if (this.state.mouseDown){
+
       const current = this.state.grid.slice();
-      // current[i][j] = (current[i][j] === 'X') ? null : 'X';
       current[i][j] = (this.state.wallEdit === 'addWall') ? 'X' : null;
       const classUpdate = this.state.classGrid.slice();
-      //classUpdate[i][j] = (classUpdate[i][j] === 'square wall') ? 'square' : 'square wall';
-      classUpdate[i][j] = (this.state.wallEdit === 'addWall') ? 'square wall' : 'square';
+      if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
+        {}
+      } else {
+        classUpdate[i][j] = (this.state.wallEdit === 'addWall') ? 'square wall' : 'square';
+      }
+
       this.setState({
         grid: current,
         classGrid: classUpdate,
@@ -108,6 +133,7 @@ class Board extends React.Component {
     }
   }
 
+  /*
   initBoard() {
     const initClassUpdate = this.state.classGrid.slice();
     initClassUpdate[0][0] = 'square wall';
@@ -116,6 +142,7 @@ class Board extends React.Component {
       classGrid: initClassUpdate,
     })
   }
+  */
 
   handleClick (i, j) {
     const current = this.state.grid.slice();
@@ -143,13 +170,6 @@ class Board extends React.Component {
       grid.push(currentRow)
     }
 
-    //this.setState({ })
-    //this.state.classGrid[0][0] = 'square wall';
-
-
-
-    //console.log(grid);
-    //console.log(this.state.grid);
     return (
       <div>
         {grid.map((row, rowId) => {
