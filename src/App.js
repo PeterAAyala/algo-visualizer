@@ -22,6 +22,12 @@ function arrayEquals(a, b) {
       a.length === b.length &&
       a.every((val, index) => val === b[index]);
 }
+class Solver extends React.Component{
+  constructor(props){
+    super(props);
+  }
+}
+
 
 class Buttons extends React.Component{
   
@@ -153,17 +159,6 @@ class Board extends React.Component {
       });
     }
   }
-
-  /*
-  initBoard() {
-    const initClassUpdate = this.state.classGrid.slice();
-    initClassUpdate[0][0] = 'square wall';
-    initClassUpdate[9][19] = 'square wall';
-    this.setState({
-      classGrid: initClassUpdate,
-    })
-  }
-  */
 
   handleClick (i, j) {
     const current = this.state.grid.slice();
