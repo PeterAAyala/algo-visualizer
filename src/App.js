@@ -16,18 +16,89 @@ function Square(props) {
   )
 }
 
+// return the 
+function checkNeighbors(matrix, cell){
+  // Matrix: Board.state.grid, with Array of Arrays type
+  // Cell: [row, col] within Matrix
+  const numRows = matrix.length;
+  const numCols = matrix[0].length;
+  const neighbors = [];
+
+  // Check cell to the top 
+  if (cell[0] == 0){
+    {}
+  } else {
+    if (matrix[cell[0] - 1][cell[1]] != 1){
+      const resultingKey = (cell[0]-1)*numCols + cell[1];
+      neighbors.push(resultingKey);
+    } 
+  }
+
+  // Check cell to the left
+  if (cell[1] == 0){
+    {}
+  } else {
+    if (matrix[cell[0]][cell[1] - 1] != 1){
+      const resultingKey = (cell[0])*numCols + (cell[1]-1);
+      neighbors.push(resultingKey);
+    }
+  }
+
+  // Check cell to the bottom
+  if (cell[0] == numRows - 1){
+    {}
+  } else {
+    if (matrix[cell[0] + 1][cell[1]] != 1) {
+      const resultingKey = (cell[0]+1)*numCols + cell[1];
+      neighbors.push(resultingKey);
+    }
+  }
+
+  // Check cell to the right
+  if (cell[1] == numCols - 1){
+    {}
+  } else {
+    if (matrix[cell[0]][cell[1] + 1] != 1){
+      const resultingKey = (cell[0])*numCols + (cell[1]+1);
+      neighbors.push(resultingKey);
+    }
+  }
+
+  return neighbors;
+}
+
+// Take in the grid board, create a dict of which 
+function createGraph(matrix) {
+  const numRows = matrix.length;
+  const numCols = matrix[0].length;
+  var result = {};
+  
+  for (let i = 0; i < numRows; i++) {
+    for (let j = 0; j < numCols; j++){
+      const resultingKey = i*numCols+j;
+      result[resultingKey] = {
+        neighbors: checkNeighbors(matrix, [i,j]),
+        location: [i,j]
+      };
+    }
+  }
+  return result;
+}
+
 function arrayEquals(a, b) {
   return Array.isArray(a) &&
       Array.isArray(b) &&
       a.length === b.length &&
       a.every((val, index) => val === b[index]);
 }
+
+/*
 class Solver extends React.Component{
   constructor(props){
     super(props);
   }
 }
-
+*/
 
 class Buttons extends React.Component{
   
@@ -63,10 +134,13 @@ class Board extends React.Component {
     const initClassUpdate = Array(10).fill('square').map(x => Array(20).fill('square'));
     initClassUpdate[0][0] = 'square start';
     initClassUpdate[9][19] = 'square end';
+    const gridInit = Array(10).fill(null).map(x => Array(20).fill(null));
+    gridInit[0][0] = 2;
+    gridInit[9][19] = 3;
 
     this.state = {
       value: null,
-      grid: Array(10).fill(null).map(x => Array(20).fill(null)),
+      grid: gridInit,
       classGrid: initClassUpdate,
       mouseDown: false,
       wallEdit: null,
@@ -106,10 +180,10 @@ class Board extends React.Component {
   }
   
 
-  renderSquare(i, j) {
+  renderSquare(i, j, len) {
     return (
       <Square 
-        key = {i+j}
+        key = {i*len+j}
         class = {this.state.classGrid[i][j]}//'square'
         value = {this.state.grid[i][j]}
         onClick = {() => this.handleClick(i,j)}
@@ -145,7 +219,7 @@ class Board extends React.Component {
     } else if (this.state.mouseDown){
 
       const current = this.state.grid.slice();
-      current[i][j] = (this.state.wallEdit === 'addWall') ? 'X' : null;
+      current[i][j] = (this.state.wallEdit === 'addWall') ? 1 : null;
       const classUpdate = this.state.classGrid.slice();
       if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
         {}
@@ -165,6 +239,7 @@ class Board extends React.Component {
     current[i][j] = 'X';
     const classUpdate = this.state.classGrid.slice();
     classUpdate[i][j] = 'square wall';
+    console.log(createGraph(this.state.grid));
     this.setState({
       grid: current,
       classGrid: classUpdate,
@@ -181,7 +256,7 @@ class Board extends React.Component {
     for (let row = 0; row < GRID_ROW_LENGTH; row++){
       const currentRow = [];
       for (let col = 0; col < GRID_COL_LENGTH; col++){
-        currentRow.push(this.renderSquare(row, col))
+        currentRow.push(this.renderSquare(row, col, GRID_COL_LENGTH))
       }
       grid.push(currentRow)
     }
