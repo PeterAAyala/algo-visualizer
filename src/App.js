@@ -1,3 +1,4 @@
+import { selectOptions } from '@testing-library/user-event/dist/select-options';
 import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
 import './buttons.css';
@@ -15,6 +16,27 @@ function Square(props) {
     </button>
   )
 }
+
+function SolveButton(props) {
+  return (
+    <button
+      className={props.class}
+      onClick={props.onClick}
+    >
+      {props.value}
+    </button>
+  )
+}
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
 
 // return the 
 function checkNeighbors(matrix, cell){
@@ -91,14 +113,6 @@ function arrayEquals(a, b) {
       a.length === b.length &&
       a.every((val, index) => val === b[index]);
 }
-
-/*
-class Solver extends React.Component{
-  constructor(props){
-    super(props);
-  }
-}
-*/
 
 class Buttons extends React.Component{
   
@@ -194,6 +208,86 @@ class Board extends React.Component {
     )
   };
 
+  updateRender(coord){
+    const classUpdate = this.state.classGrid.slice();
+    //const state = this.state;
+    
+    classUpdate[coord[0]][coord[1]] = 'square searched';
+    
+    this.setState((state) => {
+      return {classGrid: classUpdate};
+    });
+    //this.forceUpdate(callback);      
+  }
+
+  solveAlgo () {
+    const Start = this.state.startBlock[0]*20 +this.state.startBlock[1] ;
+    const End = this.state.endBlock[0]*20+this.state.endBlock[1];
+    var queue = [];
+    var visited = Array(200).fill(false);
+    const matrixGrid = createGraph(this.state.grid);
+    const element = Start;
+    var go = true;
+
+    console.log(matrixGrid);
+    //console.log(End);
+    queue.push(Start);
+    visited[Start] = true;
+
+    const loop = () => {
+    //while (queue.length != 0 || element != End){
+      if (queue.length!=0 && go){ 
+        var s = queue.shift();
+        /*if (s == End || element == End) {
+          console.log('test');
+          break
+        }*/
+        //console.log(matrixGrid[s]['neighbors']);
+        for (let i = 0; i < matrixGrid[s]['neighbors'].length; i++) {
+          const element = matrixGrid[s]['neighbors'][i];
+          const coord = matrixGrid[element]['location'];
+          if (element == End) go = false;
+          //console.log(coord);
+          //console.log(i);
+          //console.log(element);
+          if (!(visited[element])) {
+            /*if (element == End){
+              break
+            }*/
+
+            queue.push(element);
+            visited[element] = true;
+            console.log(queue);
+
+            this.updateRender(coord);
+            
+            /*const classUpdate = this.state.classGrid.slice();
+            classUpdate[coord[0]][coord[1]] = 'square searched';
+            
+            this.setState({
+              classGrid: classUpdate,
+            });*/
+            //sleep(100);
+            //console.log();
+          }
+        }
+      }
+      if(queue.length!=0 && go) setTimeout(loop, 0);
+    }
+    loop();
+    // console.log(visited);
+  }
+
+  renderSolve() {
+    return (
+      <SolveButton
+        key={'solve'}
+        class={'null'}
+        onClick={() => this.solveAlgo()}
+      />
+    )
+  }
+
   handleHover (i, j){
     if (this.state.mouseDown && this.state.startFlag) {
       const prevStart = this.state.startBlock;
@@ -247,8 +341,7 @@ class Board extends React.Component {
   }
 
   render () {
-    //console.log(this.handleEvent);
-    //this.initBoard();
+    
     const GRID_ROW_LENGTH = 10;
     const GRID_COL_LENGTH = 20; 
     const grid = [];
@@ -262,7 +355,9 @@ class Board extends React.Component {
     }
 
     return (
+
       <div>
+        {this.renderSolve()}
         {grid.map((row, rowId) => {
           return (
             <div key={rowId} className='board-row'>
