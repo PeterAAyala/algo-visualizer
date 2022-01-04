@@ -1,6 +1,10 @@
 import { selectOptions } from '@testing-library/user-event/dist/select-options';
 import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
+import { checkNeighbors, createGraph, arrayEquals, parentChainReturn } from './supportFunctions.js';
+// import checkNeighbors from './supportFunctions.js';
+//import createGraph from './supportFunctions.js';
+//import arrayEquals from './supportFunctions.js'; 
 import './buttons.css';
 
 function Square(props) {
@@ -28,7 +32,7 @@ function SolveButton(props) {
   )
 }
 
-
+/*
 function sleep(milliseconds) {
   var start = new Date().getTime();
   for (var i = 0; i < 1e7; i++) {
@@ -37,8 +41,9 @@ function sleep(milliseconds) {
     }
   }
 }
+*/
 
-
+/*
 // return the 
 function checkNeighbors(matrix, cell){
   // Matrix: Board.state.grid, with Array of Arrays type
@@ -90,6 +95,7 @@ function checkNeighbors(matrix, cell){
   return neighbors;
 }
 
+
 // Take in the grid board, create a dict of which 
 function createGraph(matrix) {
   const numRows = matrix.length;
@@ -114,7 +120,7 @@ function arrayEquals(a, b) {
       a.length === b.length &&
       a.every((val, index) => val === b[index]);
 }
-
+*/
 class Buttons extends React.Component{
   
   constructor(props){
@@ -220,6 +226,7 @@ class Board extends React.Component {
     });
   }
 
+  /*
   parentChainReturn (chain, start, end) {
     var startFlag = false;
     var node = end;
@@ -236,8 +243,8 @@ class Board extends React.Component {
     if (len == 2) return [];
     return result.slice(1,len-1);
   }
-
-  renderFinalPath2 = () => {
+  
+  renderFinalPath = () => {
     const path = this.state.finalPath;
     const matrixGrid = createGraph(this.state.grid);
 
@@ -253,23 +260,25 @@ class Board extends React.Component {
       }
     }
     loopy();
-
   }
-  /*
-  renderFinalPath = (path, matrixGrid, classDesc) => {
-    //var go = true;
-    //var temp = path;
-    if (path.length!=0){
-      var q = path.shift();
-      console.log(q);
-      const loc = matrixGrid[q]['location'];
-      this.updateRender(loc, classDesc);
+*/
+  renderFinalPath = (path, matrixGrid) => {
+    //const path = this.state.finalPath;
+    //const matrixGrid = createGraph(this.state.grid);
+
+    const loopy = () => {
+      if (path.length!=0){
+        var q = path.shift();
+        console.log(q);
+        const loc = matrixGrid[q]['location'];
+        this.updateRender(loc, 'result');
+      }
+      if(path.length!=0) { 
+        setTimeout(loopy, 10);
+      }
     }
-    if(path.length!=0) { 
-      //sleep(1000);
-      setTimeout(this.renderFinalPath(path, matrixGrid, classDesc), 0);
-    }
-  }*/
+    loopy();
+  }
 
   solveAlgo () {
     const Start = this.state.startBlock[0]*20 +this.state.startBlock[1] ;
@@ -279,13 +288,10 @@ class Board extends React.Component {
     var parentChain = Array(200).fill(null);
     const matrixGrid = createGraph(this.state.grid);
     var go = true;
-
-    console.log(matrixGrid);
-    //console.log(End);
+    //console.log(matrixGrid);
+    
     queue.push(Start);
     visited[Start] = true;
-
-
 
     const loop = () => {
       if (queue.length!=0 && go){ 
@@ -298,30 +304,25 @@ class Board extends React.Component {
             parentChain[element] = s;
             queue.push(element);
             visited[element] = true;
-            console.log(queue);
-            console.log(parentChain);
+            //console.log(queue);
+            //console.log(parentChain);
             this.updateRender(coord, 'searched');
 
           }
         }
       }
       if(queue.length!=0 && go) { 
-        setTimeout(loop, 100);
+        setTimeout(loop, 10);
       } else {
-        //console.log('done');
-        const finalPath = this.parentChainReturn(parentChain, Start, End);
+        const finalPath = parentChainReturn(parentChain, Start, End);
         this.setState({
           finalPath: finalPath,
         });
-        //setTimeout(this.renderFinalPath(finalPath, matrixGrid, 'result'), 10000);
-        this.renderFinalPath2();
-        //console.log(this.parentChainReturn(parentChain, Start, End));
+        //this.renderFinalPath();
+        this.renderFinalPath(this.state.finalPath, matrixGrid)
       }
     }
     loop();
-  
-    //console.log(this.parentChainReturn(parentChain, Start, End));
-    // console.log(visited);
   }
 
   renderSolve() {
