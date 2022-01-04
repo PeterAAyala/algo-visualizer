@@ -1,7 +1,7 @@
 import { selectOptions } from '@testing-library/user-event/dist/select-options';
 import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
-import { checkNeighbors, createGraph, arrayEquals, parentChainReturn } from './supportFunctions.js';
+import { createGraph, arrayEquals, parentChainReturn } from './supportFunctions.js';
 // import checkNeighbors from './supportFunctions.js';
 //import createGraph from './supportFunctions.js';
 //import arrayEquals from './supportFunctions.js'; 
@@ -32,95 +32,6 @@ function SolveButton(props) {
   )
 }
 
-/*
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-*/
-
-/*
-// return the 
-function checkNeighbors(matrix, cell){
-  // Matrix: Board.state.grid, with Array of Arrays type
-  // Cell: [row, col] within Matrix
-  const numRows = matrix.length;
-  const numCols = matrix[0].length;
-  const neighbors = [];
-
-  // Check cell to the top 
-  if (cell[0] == 0){
-    {}
-  } else {
-    if (matrix[cell[0] - 1][cell[1]] != 1){
-      const resultingKey = (cell[0]-1)*numCols + cell[1];
-      neighbors.push(resultingKey);
-    } 
-  }
-
-  // Check cell to the left
-  if (cell[1] == 0){
-    {}
-  } else {
-    if (matrix[cell[0]][cell[1] - 1] != 1){
-      const resultingKey = (cell[0])*numCols + (cell[1]-1);
-      neighbors.push(resultingKey);
-    }
-  }
-
-  // Check cell to the bottom
-  if (cell[0] == numRows - 1){
-    {}
-  } else {
-    if (matrix[cell[0] + 1][cell[1]] != 1) {
-      const resultingKey = (cell[0]+1)*numCols + cell[1];
-      neighbors.push(resultingKey);
-    }
-  }
-
-  // Check cell to the right
-  if (cell[1] == numCols - 1){
-    {}
-  } else {
-    if (matrix[cell[0]][cell[1] + 1] != 1){
-      const resultingKey = (cell[0])*numCols + (cell[1]+1);
-      neighbors.push(resultingKey);
-    }
-  }
-
-  return neighbors;
-}
-
-
-// Take in the grid board, create a dict of which 
-function createGraph(matrix) {
-  const numRows = matrix.length;
-  const numCols = matrix[0].length;
-  var result = {};
-  
-  for (let i = 0; i < numRows; i++) {
-    for (let j = 0; j < numCols; j++){
-      const resultingKey = i*numCols+j;
-      result[resultingKey] = {
-        neighbors: checkNeighbors(matrix, [i,j]),
-        location: [i,j]
-      };
-    }
-  }
-  return result;
-}
-
-function arrayEquals(a, b) {
-  return Array.isArray(a) &&
-      Array.isArray(b) &&
-      a.length === b.length &&
-      a.every((val, index) => val === b[index]);
-}
-*/
 class Buttons extends React.Component{
   
   constructor(props){
@@ -226,42 +137,6 @@ class Board extends React.Component {
     });
   }
 
-  /*
-  parentChainReturn (chain, start, end) {
-    var startFlag = false;
-    var node = end;
-    var result = [node];
-
-    while (!(startFlag)) {
-      const parent = chain[node];
-      result.push(parent);
-      node = parent;
-      if (node == start) startFlag = true; 
-    }
-    console.log(result);
-    const len = result.length;
-    if (len == 2) return [];
-    return result.slice(1,len-1);
-  }
-  
-  renderFinalPath = () => {
-    const path = this.state.finalPath;
-    const matrixGrid = createGraph(this.state.grid);
-
-    const loopy = () => {
-      if (path.length!=0){
-        var q = path.shift();
-        console.log(q);
-        const loc = matrixGrid[q]['location'];
-        this.updateRender(loc, 'result');
-      }
-      if(path.length!=0) { 
-        setTimeout(loopy, 100);
-      }
-    }
-    loopy();
-  }
-*/
   renderFinalPath = (path, matrixGrid) => {
     //const path = this.state.finalPath;
     //const matrixGrid = createGraph(this.state.grid);
@@ -311,9 +186,13 @@ class Board extends React.Component {
           }
         }
       }
-      if(queue.length!=0 && go) { 
+      if (go) { 
         setTimeout(loop, 10);
+      } else if (queue.length == 0){
+        console.log(queue);
+        console.log('Not solvable');
       } else {
+        console.log(queue);
         const finalPath = parentChainReturn(parentChain, Start, End);
         this.setState({
           finalPath: finalPath,
