@@ -48,6 +48,10 @@ ol, ul {
   background: #89CFF0;
 }
 
+.result {
+  background: #FFEA00;
+}
+
 .square:focus {
   outline: none;
 }

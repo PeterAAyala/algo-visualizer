@@ -28,6 +28,7 @@ function SolveButton(props) {
   )
 }
 
+
 function sleep(milliseconds) {
   var start = new Date().getTime();
   for (var i = 0; i < 1e7; i++) {
@@ -162,6 +163,7 @@ class Board extends React.Component {
       startFlag: false,
       endBlock: [9, 19],
       endFlag: false,
+      finalPath: null,
     };
   }
   
@@ -208,25 +210,74 @@ class Board extends React.Component {
     )
   };
 
-  updateRender(coord){
+  updateRender(coord, classDesc){
     const classUpdate = this.state.classGrid.slice();
-    //const state = this.state;
-    
-    classUpdate[coord[0]][coord[1]] = 'square searched';
-    
+    if (!(classUpdate[coord[0]][coord[1]].includes('start') || classUpdate[coord[0]][coord[1]].includes('end'))){
+      classUpdate[coord[0]][coord[1]] = 'square ' + classDesc;
+    }
     this.setState((state) => {
       return {classGrid: classUpdate};
     });
-    //this.forceUpdate(callback);      
   }
+
+  parentChainReturn (chain, start, end) {
+    var startFlag = false;
+    var node = end;
+    var result = [node];
+
+    while (!(startFlag)) {
+      const parent = chain[node];
+      result.push(parent);
+      node = parent;
+      if (node == start) startFlag = true; 
+    }
+    console.log(result);
+    const len = result.length;
+    if (len == 2) return [];
+    return result.slice(1,len-1);
+  }
+
+  renderFinalPath2 = () => {
+    const path = this.state.finalPath;
+    const matrixGrid = createGraph(this.state.grid);
+
+    const loopy = () => {
+      if (path.length!=0){
+        var q = path.shift();
+        console.log(q);
+        const loc = matrixGrid[q]['location'];
+        this.updateRender(loc, 'result');
+      }
+      if(path.length!=0) { 
+        setTimeout(loopy, 100);
+      }
+    }
+    loopy();
+
+  }
+  /*
+  renderFinalPath = (path, matrixGrid, classDesc) => {
+    //var go = true;
+    //var temp = path;
+    if (path.length!=0){
+      var q = path.shift();
+      console.log(q);
+      const loc = matrixGrid[q]['location'];
+      this.updateRender(loc, classDesc);
+    }
+    if(path.length!=0) { 
+      //sleep(1000);
+      setTimeout(this.renderFinalPath(path, matrixGrid, classDesc), 0);
+    }
+  }*/
 
   solveAlgo () {
     const Start = this.state.startBlock[0]*20 +this.state.startBlock[1] ;
     const End = this.state.endBlock[0]*20+this.state.endBlock[1];
     var queue = [];
     var visited = Array(200).fill(false);
+    var parentChain = Array(200).fill(null);
     const matrixGrid = createGraph(this.state.grid);
-    const element = Start;
     var go = true;
 
     console.log(matrixGrid);
@@ -234,47 +285,42 @@ class Board extends React.Component {
     queue.push(Start);
     visited[Start] = true;
 
+
+
     const loop = () => {
-    //while (queue.length != 0 || element != End){
       if (queue.length!=0 && go){ 
         var s = queue.shift();
-        /*if (s == End || element == End) {
-          console.log('test');
-          break
-        }*/
-        //console.log(matrixGrid[s]['neighbors']);
         for (let i = 0; i < matrixGrid[s]['neighbors'].length; i++) {
           const element = matrixGrid[s]['neighbors'][i];
           const coord = matrixGrid[element]['location'];
           if (element == End) go = false;
-          //console.log(coord);
-          //console.log(i);
-          //console.log(element);
           if (!(visited[element])) {
-            /*if (element == End){
-              break
-            }*/
-
+            parentChain[element] = s;
             queue.push(element);
             visited[element] = true;
             console.log(queue);
+            console.log(parentChain);
+            this.updateRender(coord, 'searched');
 
-            this.updateRender(coord);
-            
-            /*const classUpdate = this.state.classGrid.slice();
-            classUpdate[coord[0]][coord[1]] = 'square searched';
-            
-            this.setState({
-              classGrid: classUpdate,
-            });*/
-            //sleep(100);
-            //console.log();
           }
         }
       }
-      if(queue.length!=0 && go) setTimeout(loop, 0);
+      if(queue.length!=0 && go) { 
+        setTimeout(loop, 100);
+      } else {
+        //console.log('done');
+        const finalPath = this.parentChainReturn(parentChain, Start, End);
+        this.setState({
+          finalPath: finalPath,
+        });
+        //setTimeout(this.renderFinalPath(finalPath, matrixGrid, 'result'), 10000);
+        this.renderFinalPath2();
+        //console.log(this.parentChainReturn(parentChain, Start, End));
+      }
     }
     loop();
+  
+    //console.log(this.parentChainReturn(parentChain, Start, End));
     // console.log(visited);
   }
 
