@@ -109,6 +109,25 @@ class Board extends React.Component {
     }
   }
   
+  clearBoard (wallFlag) {
+    const classUpdate = this.state.classGrid.slice();
+    const grid = this.state.grid.slice();
+    for (let i = 0; i < classUpdate.length; i++) {
+      for (let j = 0; j < classUpdate[0].length; j++) {
+        if (classUpdate[i][j].includes('result') || classUpdate[i][j].includes('searched')){
+          classUpdate[i][j] = 'square';
+        }
+        if (classUpdate[i][j].includes('wall') && wallFlag){
+          classUpdate[i][j] = 'square';
+          grid[i][j] = null;
+        }
+      }
+    }
+    this.setState({
+      classGrid: classUpdate,
+      grid: grid,
+    });
+  }
 
   renderSquare(i, j, len) {
     return (
@@ -126,7 +145,9 @@ class Board extends React.Component {
 
   updateRender(coord, classDesc){
     const classUpdate = this.state.classGrid.slice();
-    if (!(classUpdate[coord[0]][coord[1]].includes('start') || classUpdate[coord[0]][coord[1]].includes('end'))){
+    var cellClass = classUpdate[coord[0]][coord[1]];
+
+    if (!(cellClass.includes('start') || cellClass.includes('end'))){
       classUpdate[coord[0]][coord[1]] = 'square ' + classDesc;
     }
     this.setState((state) => {
@@ -176,8 +197,6 @@ class Board extends React.Component {
             parentChain[element] = s;
             queue.push(element);
             visited[element] = true;
-            //console.log(queue);
-            //console.log(parentChain);
             this.updateRender(coord, 'searched');
 
           }
@@ -194,7 +213,6 @@ class Board extends React.Component {
         this.setState({
           finalPath: finalPath,
         });
-        //this.renderFinalPath();
         this.renderFinalPath(this.state.finalPath, matrixGrid)
       }
     }
@@ -215,6 +233,7 @@ class Board extends React.Component {
     if (this.state.mouseDown && this.state.startFlag) {
       const prevStart = this.state.startBlock;
       const classUpdate = this.state.classGrid.slice();
+      this.clearBoard(false);
 
       classUpdate[i][j] = 'square start';
       classUpdate[prevStart[0]][prevStart[1]] = 'square';
@@ -226,6 +245,7 @@ class Board extends React.Component {
     } else if (this.state.mouseDown && this.state.endFlag){
       const prevEnd = this.state.endBlock;
       const classUpdate = this.state.classGrid.slice();
+      this.clearBoard(false);
 
       classUpdate[i][j] = 'square end';
       classUpdate[prevEnd[0]][prevEnd[1]] = 'square';
