@@ -2,9 +2,6 @@ import { selectOptions } from '@testing-library/user-event/dist/select-options';
 import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
 import { createGraph, arrayEquals, parentChainReturn } from './supportFunctions.js';
-// import checkNeighbors from './supportFunctions.js';
-//import createGraph from './supportFunctions.js';
-//import arrayEquals from './supportFunctions.js'; 
 import './buttons.css';
 
 function Square(props) {
