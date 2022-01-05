@@ -114,7 +114,7 @@ class Board extends React.Component {
     return (
       <Square 
         key = {i*len+j}
-        class = {this.state.classGrid[i][j]}//'square'
+        class = {this.state.classGrid[i][j]}
         value = {this.state.grid[i][j]}
         onClick = {() => this.handleClick(i,j)}
         onMouseOver = {() => this.handleHover(i,j)}
