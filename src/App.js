@@ -81,7 +81,7 @@ class Board extends React.Component {
     };
   }
   
-  // Event handler for mouse hold down 
+  // Event handler for mouse hold down .
   handleEvent = (i,j) => (event) => {
     if (arrayEquals([i,j], this.state.startBlock) && event.type === 'mousedown'){
       this.setState({
