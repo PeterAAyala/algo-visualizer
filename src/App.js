@@ -182,6 +182,7 @@ class Board extends React.Component {
     const matrixGrid = createGraph(this.state.grid);
     var go = true;
     //console.log(matrixGrid);
+    //
     
     queue.push(Start);
     visited[Start] = true;
