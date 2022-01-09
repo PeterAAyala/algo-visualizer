@@ -60,12 +60,16 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     
-    const initClassUpdate = Array(10).fill('square').map(x => Array(20).fill('square'));
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    const numRows = Math.floor(h * 0.70 / 28);
+    const numCols = Math.floor(w * 0.95 / 28);
+    const initClassUpdate = Array(numRows).fill('square').map(x => Array(numCols).fill('square'));
     initClassUpdate[0][0] = 'square start';
-    initClassUpdate[9][19] = 'square end';
-    const gridInit = Array(10).fill(null).map(x => Array(20).fill(null));
+    initClassUpdate[numRows-1][numCols-1] = 'square end';
+    const gridInit = Array(numRows).fill(null).map(x => Array(numCols).fill(null));
     gridInit[0][0] = 2;
-    gridInit[9][19] = 3;
+    gridInit[numRows-1][numCols-1] = 3;
 
     this.state = {
       value: null,
@@ -75,9 +79,13 @@ class Board extends React.Component {
       wallEdit: null,
       startBlock: [0,0],
       startFlag: false,
-      endBlock: [9, 19],
+      endBlock: [numRows-1, numCols-1],
       endFlag: false,
       finalPath: null,
+      windowWidth: w,
+      windowHeight: h,
+      numRows: numRows,
+      numCols: numCols,
     };
   }
   
@@ -174,11 +182,16 @@ class Board extends React.Component {
   }
 
   solveAlgo () {
-    const Start = this.state.startBlock[0]*20 +this.state.startBlock[1] ;
-    const End = this.state.endBlock[0]*20+this.state.endBlock[1];
+    this.clearBoard(false);
+    const numRows = this.state.numRows;
+    const numCols = this.state.numCols;
+    const numCells = numRows * this.state.numCols;
+    const Start = this.state.startBlock[0]* numCols +this.state.startBlock[1];
+    const End = this.state.endBlock[0]*numCols+this.state.endBlock[1];
+    
     var queue = [];
-    var visited = Array(200).fill(false);
-    var parentChain = Array(200).fill(null);
+    var visited = Array(numCells).fill(false);
+    var parentChain = Array(numCells).fill(null);
     const matrixGrid = createGraph(this.state.grid);
     var go = true;
     //console.log(matrixGrid);
@@ -204,7 +217,7 @@ class Board extends React.Component {
         }
       }
       if (go) { 
-        setTimeout(loop, 10);
+        setTimeout(loop, 0);
       } else if (queue.length == 0){
         console.log(queue);
         console.log('Not solvable');
@@ -286,8 +299,9 @@ class Board extends React.Component {
 
   render () {
     
-    const GRID_ROW_LENGTH = 10;
-    const GRID_COL_LENGTH = 20; 
+    const GRID_ROW_LENGTH = this.state.numRows;
+    const GRID_COL_LENGTH = this.state.numCols; 
+    
     const grid = [];
 
     for (let row = 0; row < GRID_ROW_LENGTH; row++){
