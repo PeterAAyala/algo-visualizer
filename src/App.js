@@ -125,16 +125,7 @@ class Board extends React.Component {
       </div>
     )
   }
-  //
-  /*
   
-  
-            <label for='algorithm-selection'>Algorithms</label>
-            <select name='algo' id='algo'>
-              <option value='BFS'> Breadth-First-Search</option>
-              <option value='DFS'> Depth-First-Search</option>
-            </select>
-  */
   // Event handler for mouse hold down .
   handleEvent = (i,j) => (event) => {
     if (arrayEquals([i,j], this.state.startBlock) && event.type === 'mousedown'){
@@ -210,9 +201,6 @@ class Board extends React.Component {
   }
 
   renderFinalPath = (path, matrixGrid) => {
-    //const path = this.state.finalPath;
-    //const matrixGrid = createGraph(this.state.grid);
-
     const loopy = () => {
       if (path.length!=0){
         var q = path.shift();
@@ -232,16 +220,14 @@ class Board extends React.Component {
     const numRows = this.state.numRows;
     const numCols = this.state.numCols;
     const numCells = numRows * this.state.numCols;
-    const Start = this.state.startBlock[0]* numCols +this.state.startBlock[1];
-    const End = this.state.endBlock[0]*numCols+this.state.endBlock[1];
+    const Start = this.state.startBlock[0] * numCols +this.state.startBlock[1];
+    const End = this.state.endBlock[0] * numCols+this.state.endBlock[1];
     
     var queue = [];
     var visited = Array(numCells).fill(false);
     var parentChain = Array(numCells).fill(null);
     const matrixGrid = createGraph(this.state.grid);
     var go = true;
-    //console.log(matrixGrid);
-    //
     
     queue.push(Start);
     visited[Start] = true;
@@ -290,9 +276,10 @@ class Board extends React.Component {
   }
 
   handleHover (i, j){
+    const prevStart = this.state.startBlock;
+    const classUpdate = this.state.classGrid.slice();
     if (this.state.mouseDown && this.state.startFlag) {
       const prevStart = this.state.startBlock;
-      const classUpdate = this.state.classGrid.slice();
       this.clearBoard(false);
 
       classUpdate[i][j] = 'square start';
@@ -304,7 +291,6 @@ class Board extends React.Component {
       
     } else if (this.state.mouseDown && this.state.endFlag){
       const prevEnd = this.state.endBlock;
-      const classUpdate = this.state.classGrid.slice();
       this.clearBoard(false);
 
       classUpdate[i][j] = 'square end';
@@ -318,7 +304,6 @@ class Board extends React.Component {
       const current = this.state.grid.slice();
       current[i][j] = (current[i][j] == 1) ? null : 1;
       //current[i][j] = (this.state.wallEdit === 'addWall') ? 1 : null;
-      const classUpdate = this.state.classGrid.slice();
 
       if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
         {}
@@ -350,8 +335,6 @@ class Board extends React.Component {
       classUpdate[i][j] = (classUpdate[i][j].includes('wall')) ? 'square' : 'square wall';
       current[i][j] = (current[i][j] == 1) ? null : 1;
     }
-    //current[i][j] = 'X';
-    //classUpdate[i][j] = 'square wall';
     console.log(createGraph(this.state.grid));
     this.setState({
       grid: current,
