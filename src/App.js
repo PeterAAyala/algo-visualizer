@@ -148,12 +148,12 @@ class Board extends React.Component {
         endFlag: true,
       });
     } else if (event.type === 'mousedown'){
-      const buttonSelection = document.querySelector('input[name="radAnswer"]:checked').value;
+      //const buttonSelection = document.querySelector('input[name="radAnswer"]:checked').value;
       this.setState({ 
         mouseDown: true, 
-        wallEdit: buttonSelection,
+        //wallEdit: buttonSelection,
       });
-      console.log(buttonSelection);
+      //console.log(buttonSelection);
     } else {
       this.setState({ 
         mouseDown: false,
@@ -316,13 +316,22 @@ class Board extends React.Component {
     } else if (this.state.mouseDown){
 
       const current = this.state.grid.slice();
-      current[i][j] = (this.state.wallEdit === 'addWall') ? 1 : null;
+      current[i][j] = (current[i][j] == 1) ? null : 1;
+      //current[i][j] = (this.state.wallEdit === 'addWall') ? 1 : null;
       const classUpdate = this.state.classGrid.slice();
+
+      if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
+        {}
+      } else {
+        classUpdate[i][j] = (classUpdate[i][j].includes('wall')) ? 'square' : 'square wall';
+      }
+      /*
       if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
         {}
       } else {
         classUpdate[i][j] = (this.state.wallEdit === 'addWall') ? 'square wall' : 'square';
       }
+      */
 
       this.setState({
         grid: current,
@@ -333,9 +342,16 @@ class Board extends React.Component {
 
   handleClick (i, j) {
     const current = this.state.grid.slice();
-    current[i][j] = 'X';
     const classUpdate = this.state.classGrid.slice();
-    classUpdate[i][j] = 'square wall';
+
+    if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
+      {}
+    } else {
+      classUpdate[i][j] = (classUpdate[i][j].includes('wall')) ? 'square' : 'square wall';
+      current[i][j] = (current[i][j] == 1) ? null : 1;
+    }
+    //current[i][j] = 'X';
+    //classUpdate[i][j] = 'square wall';
     console.log(createGraph(this.state.grid));
     this.setState({
       grid: current,
@@ -379,7 +395,7 @@ class Board extends React.Component {
 function App() {
   return (
     <Fragment> 
-      <Buttons/>
+      
       <Board/>
     </Fragment>
   );
