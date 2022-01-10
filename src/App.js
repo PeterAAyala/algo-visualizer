@@ -80,7 +80,7 @@ class Board extends React.Component {
     var w = window.innerWidth;
     var h = window.innerHeight;
     const numRows = Math.floor(h * 0.70 / 28);
-    const numCols = Math.floor(w * 0.95 / 28);
+    const numCols = Math.floor(w * 1.00 / 28);
     const initClassUpdate = Array(numRows).fill('square').map(x => Array(numCols).fill('square'));
     initClassUpdate[0][0] = 'square start';
     initClassUpdate[numRows-1][numCols-1] = 'square end';
@@ -106,6 +106,35 @@ class Board extends React.Component {
     };
   }
   
+  renderNavBar() {
+    return (
+      <div>
+        <ul>
+          <li className='dropdown'>
+            <a className='dropbtn'>Algorithms &or;</a>
+            <div className = 'dropdown-content'>
+              <a onClick={() => this.solveAlgo()}>Breadth-First-Search</a> 
+              <a>Depth-First-Search</a>
+            </div>
+          </li>
+          <li><a>Mazes and Patterns &or; </a></li>
+          <li><a onClick={() => this.clearBoard(false)}>Clear Walls</a></li>
+          <li><a onClick={() => this.clearBoard(true)}>Clear Board</a></li>
+          <li onClick={() => this.solveAlgo()}><a>Visualize!</a></li>
+        </ul>
+      </div>
+    )
+  }
+  //
+  /*
+  
+  
+            <label for='algorithm-selection'>Algorithms</label>
+            <select name='algo' id='algo'>
+              <option value='BFS'> Breadth-First-Search</option>
+              <option value='DFS'> Depth-First-Search</option>
+            </select>
+  */
   // Event handler for mouse hold down .
   handleEvent = (i,j) => (event) => {
     if (arrayEquals([i,j], this.state.startBlock) && event.type === 'mousedown'){
@@ -332,7 +361,7 @@ class Board extends React.Component {
     return (
 
       <div>
-        {this.renderSolve()}
+        {this.renderNavBar()}
         {grid.map((row, rowId) => {
           return (
             <div key={rowId} className='board-row'>
@@ -350,7 +379,6 @@ class Board extends React.Component {
 function App() {
   return (
     <Fragment> 
-      <NavBar/>
       <Buttons/>
       <Board/>
     </Fragment>
