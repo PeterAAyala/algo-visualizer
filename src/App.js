@@ -82,12 +82,15 @@ class Board extends React.Component {
     var h = window.innerHeight;
     const numRows = Math.floor(h * 0.70 / 28);
     const numCols = Math.floor(w * 1.00 / 28);
+    const splitRows = Math.floor(numRows/2);
+    const splitCols = Math.floor(numCols/4);
+    const splitColsEnd = splitCols * 3
     const initClassUpdate = Array(numRows).fill('square').map(x => Array(numCols).fill('square'));
-    initClassUpdate[0][0] = 'square start';
-    initClassUpdate[numRows-1][numCols-1] = 'square end';
+    initClassUpdate[splitRows][splitCols] = 'square start';
+    initClassUpdate[splitRows][splitColsEnd] = 'square end';
     const gridInit = Array(numRows).fill(null).map(x => Array(numCols).fill(null));
-    gridInit[0][0] = 2;
-    gridInit[numRows-1][numCols-1] = 3;
+    gridInit[splitRows][splitCols] = 2;
+    gridInit[splitRows][splitColsEnd] = 3;
 
     this.state = {
       value: null,
@@ -95,9 +98,9 @@ class Board extends React.Component {
       classGrid: initClassUpdate,
       mouseDown: false,
       wallEdit: null,
-      startBlock: [0,0],
+      startBlock: [splitRows,splitCols],
       startFlag: false,
-      endBlock: [numRows-1, numCols-1],
+      endBlock: [splitRows,splitColsEnd],
       endFlag: false,
       finalPath: null,
       windowWidth: w,
