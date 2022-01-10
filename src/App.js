@@ -29,6 +29,7 @@ function SolveButton(props) {
   )
 }
 
+/*
 class NavBar extends React.Component {
   constructor(props){
     super(props);
@@ -72,7 +73,7 @@ class Buttons extends React.Component{
     
     )};
 }
-
+*/
 class Board extends React.Component {
   constructor(props) {
     super(props);
