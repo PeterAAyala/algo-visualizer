@@ -30,22 +30,6 @@ function SolveButton(props) {
 }
 
 /*
-class NavBar extends React.Component {
-  constructor(props){
-    super(props);
-  }
-
-  render () {
-    return (
-      <div>
-        <ul>
-          <li>Test1</li>
-          <li>Test2</li>
-          <li>Test3</li>
-        </ul>
-      </div>
-    )};
-}
 
 class Buttons extends React.Component{
   
