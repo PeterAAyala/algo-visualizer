@@ -28,8 +28,8 @@ function SolveButton(props) {
     </button>
   )
 }
-// Honestly, just filler
-/*s
+
+/*
 
 class Buttons extends React.Component{
   
