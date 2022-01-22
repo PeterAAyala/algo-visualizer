@@ -132,7 +132,7 @@ class Board extends React.Component {
         mouseDown: true, 
         //wallEdit: buttonSelection,
       });
-      //console.log(buttonSelection);
+      
     } else {
       this.setState({ 
         mouseDown: false,
