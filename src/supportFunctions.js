@@ -68,7 +68,8 @@ export const checkNeighbors = function(matrix, cell){
         neighbors.push(resultingKey);
         }
     }
-    return shuffle(neighbors);
+    // return shuffle(neighbors);
+    return neighbors;
 }
 
 /*

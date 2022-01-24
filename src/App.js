@@ -73,6 +73,7 @@ class Board extends React.Component {
     initClassUpdate[splitRows][splitCols] = 'square start';
     initClassUpdate[splitRows][splitColsEnd] = 'square end';
     const gridInit = Array(numRows).fill(null).map(x => Array(numCols).fill(null));
+    const weightsInit = Array(numRows).fill(1).map(x => Array(numCols).fill(1));
     gridInit[splitRows][splitCols] = 2;
     gridInit[splitRows][splitColsEnd] = 3;
 
@@ -80,6 +81,7 @@ class Board extends React.Component {
       value: null,
       grid: gridInit,
       classGrid: initClassUpdate,
+      weightsGrid: weightsInit,
       mouseDown: false,
       wallEdit: null,
       startBlock: [splitRows,splitCols],
@@ -101,14 +103,14 @@ class Board extends React.Component {
           <li className='dropdown'>
             <a className='dropbtn'>Algorithms &or;</a>
             <div className = 'dropdown-content'>
-              <a onClick={() => this.solveAlgo()}>Breadth-First-Search</a> 
-              <a>Depth-First-Search</a>
+              <a onClick={() => this.solveAlgo(true)}>Breadth-First-Search</a> 
+              <a onClick={() => this.solveAlgo(false)}>Depth-First-Search</a>
             </div>
           </li>
           <li><a>Mazes and Patterns &or; </a></li>
           <li><a onClick={() => this.clearBoard(false)}>Clear Walls</a></li>
           <li><a onClick={() => this.clearBoard(true)}>Clear Board</a></li>
-          <li onClick={() => this.solveAlgo()}><a>Visualize!</a></li>
+          <li onClick={() => this.solveAlgo(true)}><a>Visualize!</a></li>
         </ul>
       </div>
     )
@@ -203,8 +205,125 @@ class Board extends React.Component {
     loopy();
   }
 
-  solveAlgo () {
+  // If True, do BFS. Otherwise, DFS.
+  bFS_DFS (BFS) {
+    
+    const numRows = this.state.numRows;
+    const numCols = this.state.numCols;
+    const numCells = numRows * this.state.numCols;
+    const Start = this.state.startBlock[0] * numCols +this.state.startBlock[1];
+    const End = this.state.endBlock[0] * numCols+this.state.endBlock[1];
+    
+    var queue = [];
+    var visited = Array(numCells).fill(false);
+    var inQueue = Array(numCells).fill(false);
+    var parentChain = Array(numCells).fill(null);
+    const matrixGrid = createGraph(this.state.grid);
+    var go = true;
+    
+    queue.push(Start);
+    visited[Start] = true;
+
+    const loop = () => {
+      if (queue.length!=0 && go){
+        
+        /*
+        if (BFS) {
+          var s = queue.shift();
+        } else {
+          var s = queue.pop();
+        } 
+
+        visited[s] = true;
+        if (s == End) go = false;
+        for (let i = 0; i < matrixGrid[s]['neighbors'].length; i++) {
+          const neighbor = matrixGrid[s]['neighbors'][i];
+          //if (neighbor == End) go = false;
+          if (!(inQueue[neighbor])) {
+            parentChain[neighbor] = s;
+            queue.push(neighbor);
+            inQueue[neighbor] = true;
+          } 
+        }
+        //console.log(queue.length);
+        const coord = matrixGrid[s]['location'];
+        this.updateRender(coord, 'searched');
+        */
+        
+        if (BFS){
+          var s = queue.shift();
+          for (let i = 0; i < matrixGrid[s]['neighbors'].length; i++) {
+            const element = matrixGrid[s]['neighbors'][i];
+            const coord = matrixGrid[element]['location'];
+            if (element == End) go = false;
+            if (!(visited[element])) {
+              parentChain[element] = s;
+              queue.push(element);
+              visited[element] = true;
+              this.updateRender(coord, 'searched');
+  
+            }
+          }
+        } 
+
+        else {
+          var s = queue.pop();
+          visited[s] = true;
+          if (s == End) go = false;
+          for (let i = 0; i < matrixGrid[s]['neighbors'].length; i++) {
+            const neighbor = matrixGrid[s]['neighbors'][i];
+            //if (neighbor == End) go = false;
+            if (!(visited[neighbor])) {
+              parentChain[neighbor] = s;
+              queue.push(neighbor);
+              //inQueue[neighbor] = true;
+            } 
+          }
+          //console.log(queue.length);
+          const coord = matrixGrid[s]['location'];
+          this.updateRender(coord, 'searched');
+        }
+
+
+          /*
+            const element = matrixGrid[s]['neighbors'][i];
+            const coord = matrixGrid[element]['location'];
+            if (element == End) go = false;
+            if (!(visited[element])) {
+              parentChain[element] = s;
+              queue.push(element);
+              visited[element] = true;
+              this.updateRender(coord, 'searched');
+  
+            }
+          }
+          */
+        
+        
+        
+      }
+      if (go) { 
+        setTimeout(loop, 0);
+      } else if (queue.length == 0){
+        console.log(queue);
+        console.log('Not solvable');
+      } else {
+        console.log(queue);
+        const finalPath = parentChainReturn(parentChain, Start, End);
+        this.setState({
+          finalPath: finalPath,
+        });
+        this.renderFinalPath(this.state.finalPath, matrixGrid)
+      }
+    }
+    loop();
+
+  }
+
+  solveAlgo (BFS_flag) {
     this.clearBoard(false);
+    this.bFS_DFS(BFS_flag);
+    /*
     const numRows = this.state.numRows;
     const numCols = this.state.numCols;
     const numCells = numRows * this.state.numCols;
@@ -251,8 +370,10 @@ class Board extends React.Component {
       }
     }
     loop();
+    */
   }
 
+  /*
   renderSolve() {
     return (
       <SolveButton
@@ -262,6 +383,7 @@ class Board extends React.Component {
       />
     )
   }
+*/
 
   handleHover (i, j){
     const prevStart = this.state.startBlock;
@@ -291,6 +413,8 @@ class Board extends React.Component {
 
       const current = this.state.grid.slice();
       current[i][j] = (current[i][j] == 1) ? null : 1;
+      const weights = this.state.weightsGrid.slice();
+      //weights[i][j]
       //current[i][j] = (this.state.wallEdit === 'addWall') ? 1 : null;
 
       if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
@@ -298,7 +422,7 @@ class Board extends React.Component {
       } else {
         classUpdate[i][j] = (classUpdate[i][j].includes('wall')) ? 'square' : 'square wall';
       }
-      /*
+      /*  Keeping for now - to us if I create a toggle Add / Remove 
       if (classUpdate[i][j].includes('start') || classUpdate[i][j].includes('end')) {
         {}
       } else {
