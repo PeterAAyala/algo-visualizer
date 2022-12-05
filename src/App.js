@@ -96,6 +96,7 @@ class Board extends React.Component {
     };
   }
   
+  // Topmost navigation bar of the website with the dropdown menus 
   renderNavBar() {
     return (
       <div>
@@ -107,7 +108,14 @@ class Board extends React.Component {
               <a onClick={() => this.solveAlgo(false)}>Depth-First-Search</a>
             </div>
           </li>
-          <li><a>Mazes and Patterns &or; </a></li>
+          <li className='dropdown'>
+            <a className='dropbtn'>Mazes and Patterns &or; </a>
+            <div className='dropdown-content'>
+              <a onClick={() => this.generateRandomMaze()}>Simple Random Maze</a> 
+              <a>Simple Stair Pattern</a> 
+            </div>
+
+          </li>
           <li><a onClick={() => this.clearBoard(false)}>Clear Walls</a></li>
           <li><a onClick={() => this.clearBoard(true)}>Clear Board</a></li>
           <li onClick={() => this.solveAlgo(true)}><a>Visualize!</a></li>
@@ -116,6 +124,8 @@ class Board extends React.Component {
     )
   }
   
+  
+
   // Event handler for mouse hold down .
   handleEvent = (i,j) => (event) => {
     if (arrayEquals([i,j], this.state.startBlock) && event.type === 'mousedown'){
@@ -284,6 +294,7 @@ class Board extends React.Component {
           this.updateRender(coord, 'searched');
         }
 
+         
 
           /*
             const element = matrixGrid[s]['neighbors'][i];
@@ -318,6 +329,30 @@ class Board extends React.Component {
     }
     loop();
 
+  }
+
+
+  // Support function which generates a random maze with each square having 
+  // 30% chance of being a wall
+  generateRandomMaze () {
+    this.clearBoard(true);
+    const classUpdate = this.state.classGrid.slice();
+    const grid = this.state.grid.slice();
+    const prob = 0.3;
+
+    for (let i = 0; i < classUpdate.length; i++){
+      for (let j = 0; j < classUpdate[0].length; j++){
+        let randomNumber = Math.random();
+        if (randomNumber <= prob && grid[i][j] < 2){
+          classUpdate[i][j] = 'square wall';
+          grid[i][j] = 1
+        };
+      }
+    }
+    this.setState({
+      classGrid: classUpdate,
+      grid: grid,
+    });
   }
 
   solveAlgo (BFS_flag) {
