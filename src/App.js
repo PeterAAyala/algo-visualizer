@@ -112,7 +112,7 @@ class Board extends React.Component {
             <a className='dropbtn'>Mazes and Patterns &or; </a>
             <div className='dropdown-content'>
               <a onClick={() => this.generateRandomMaze()}>Simple Random Maze</a> 
-              <a>Simple Stair Pattern</a> 
+              <a onClick={() => this.generateStairwayMaze()}>Simple Stair Pattern</a> 
             </div>
 
           </li>
@@ -353,6 +353,34 @@ class Board extends React.Component {
       classGrid: classUpdate,
       grid: grid,
     });
+  }
+
+  // Generates a maze that looks similar to a stairway.
+  generateStairwayMaze () {
+    this.clearBoard(true);
+    const classUpdate = this.state.classGrid.slice();
+    const grid = this.state.grid.slice();
+    let rowToPopulate = classUpdate.length - 1;
+    let upwardFlag = true;
+    
+    for (let j = 0; j < classUpdate[0].length; j++){
+      if (grid[rowToPopulate][j] < 2 && rowToPopulate != classUpdate.length - 1){
+        classUpdate[rowToPopulate][j] = 'square wall';
+        grid[rowToPopulate][j] = 1;
+      }  
+      // Determine whether to move up or down for stairway.
+      // Also determine direction of way stairway is traveling.
+      upwardFlag ? rowToPopulate-- : rowToPopulate++;
+      if (rowToPopulate == classUpdate.length - 1 || rowToPopulate == 0){
+        upwardFlag = !(upwardFlag)
+      }
+    }
+
+    this.setState({
+      classGrid: classUpdate,
+      grid: grid,
+    });
+
   }
 
   solveAlgo (BFS_flag) {
