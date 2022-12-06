@@ -103,6 +103,8 @@ li a:hover {
   padding: 0;
   text-align: center;
   width: 28px;
+  transition-property: background;
+  transition-duration: 1s;
 }
 
 .wall  {
