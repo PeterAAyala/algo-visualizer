@@ -103,12 +103,16 @@ li a:hover {
   padding: 0;
   text-align: center;
   width: 28px;
+  /*background-image: linear-gradient(#aaaaaa, #aaaaaa);
+  background-repeat: no-repeat;
+  transition: background-size .5s, color .5s;*/
   transition-property: background;
   transition-duration: 1s;
 }
 
 .wall  {
   background: #aaaaaa;
+  background-position: 50% 50%;
 }
 
 .start {
