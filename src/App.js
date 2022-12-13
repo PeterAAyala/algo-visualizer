@@ -2,6 +2,7 @@ import { selectOptions } from '@testing-library/user-event/dist/select-options';
 import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
 import { createGraph, arrayEquals, parentChainReturn } from './supportFunctions.js';
+import { divideGrid } from './mazes.js';
 import './buttons.css';
 
 function Square(props) {
@@ -113,6 +114,7 @@ class Board extends React.Component {
             <div className='dropdown-content'>
               <a onClick={() => this.generateRandomMaze()}>Simple Random Maze</a> 
               <a onClick={() => this.generateStairwayMaze()}>Simple Stair Pattern</a> 
+              <a onClick={() => this.generateRecursiveMaze()}>Recursive Maze</a>
             </div>
 
           </li>
@@ -379,6 +381,18 @@ class Board extends React.Component {
     this.setState({
       classGrid: classUpdate,
       grid: grid,
+    });
+
+  }
+
+  generateRecursiveMaze () {
+    this.clearBoard(true);
+    const grid = this.state.grid.slice();
+    const newGrid = divideGrid(grid, 0, 0, grid[0].length, grid.length);
+    //console.log(newGrid);
+
+    this.setState({
+      grid: newGrid,
     });
 
   }
