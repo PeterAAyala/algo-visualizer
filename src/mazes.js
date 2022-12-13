@@ -16,7 +16,7 @@ export const divideGrid = function(grid, x, y, width, height) {
     let orientation = chooseOrientation(width, height);
     let horizontalFlag = (orientation == "Horizontal");
 
-    if (height < 2 || width < 2){ console.log("break"); return }
+    if (height < 3 || width < 3){ console.log("break"); return }
     
     // Where the vertical or horizontal line is drawn
     // wx represents where in position x a vertical line is drawn (odd only)
