@@ -3,6 +3,7 @@ import React from 'react';
 import { Fragment } from 'react/cjs/react.production.min';
 import { createGraph, arrayEquals, parentChainReturn } from './supportFunctions.js';
 import { divideGrid } from './mazes.js';
+import { recursiveDivisionMaze } from './mazes.js';
 import './buttons.css';
 
 function Square(props) {
@@ -387,12 +388,27 @@ class Board extends React.Component {
 
   generateRecursiveMaze () {
     this.clearBoard(true);
-    const grid = this.state.grid.slice();
-    const newGrid = divideGrid(grid, 0, 0, grid[0].length, grid.length);
+    const newGrid = this.state.grid.slice();
+    const classUpdate = this.state.classGrid.slice();
+    const newWalls = recursiveDivisionMaze(newGrid, this.state.startBlock,this.state.endBlock);
+    console.log(newWalls);
+    for (let i = 0; i < newWalls.length; i++){
+      
+      let wx = newWalls[i][0];
+      let wy = newWalls[i][1];
+      console.log(wx,wy);
+      
+      newGrid[wx][wy] = 1;
+      classUpdate[wx][wy] = 'square wall';
+    }
+    //const newGrid = divideGrid(grid, 0, 0, grid[0].length, grid.length);
     //console.log(newGrid);
-
+    //const newGrid2 = recursiveDivisionMaze(grid, false,false);
+    //console.log(newGrid2);
+    
     this.setState({
       grid: newGrid,
+      classGrid: classUpdate,
     });
 
   }
